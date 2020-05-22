@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const misc = require('../helpers/misc');
+const misc = require('./misc');
 
 module.exports = {
   CheckToken: async (req, response, next) => {
