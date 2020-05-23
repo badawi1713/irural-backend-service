@@ -8,9 +8,19 @@ const redis = require('redis');
 const redisClient = redis.createClient();
 
 exports.register = async (request, response) => {
-  let body = request.body;
-  try {
-  } catch (error) {}
+  let data = {};
+  if (request.body.role === 'customer') {
+    const { name, address, phone, email, nomor_ktp } = request.body;
+    data = { role, name, address, phone, email, nomor_ktp };
+  } else {
+    const { nameofisp, name, address, email, photo, phone } = request.body;
+    data = { role, nameofisp, name, address, email, photo, phone };
+  }
+
+  console.log('testhhhhhh', request.body.role);
+  //.then((usr) => {
+  //console.log(usr, 'haloooooooo');
+  //});
 };
 exports.login = (request, response) => {};
 exports.isAdmin = async function (id) {
@@ -20,15 +30,35 @@ exports.isAdmin = async function (id) {
       role: 'admin',
     },
   });
-  exports.getALl = async (request, response) => {
-    try {
-      let isAdmin = await exports.isAdmin(request.user.id);
-      if (!isAdmin) {
-        return misc.response(response, 500, true, 'Anda Bukan Admin');
-      }
-      let users = await User.findAll({
-        attributes: ['id', 'name', 'email', 'created_at', 'updated_at', 'role'],
-      });
-    } catch (error) {}
-  };
+};
+
+exports.getUsers = async function (req, res) {
+  try {
+    let isAdmin = await exports.isAdmin(req.user.id);
+
+    if (!isAdmin) {
+      return res.status(401).send('Unauthorized');
+    }
+
+    let users = await User.findAll({
+      attributes: [
+        'id',
+        'name',
+        'nameofisp',
+        'email',
+        'photo',
+        'phone',
+        'role',
+      ],
+    });
+
+    if (users) {
+      return res.send(users);
+    }
+
+    throw new Error('Something went wrong');
+  } catch (e) {
+    console.error(error.message);
+    misc.response(response, 500, true, 'Server error');
+  }
 };

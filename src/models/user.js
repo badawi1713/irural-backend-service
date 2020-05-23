@@ -7,18 +7,18 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      name: { type: Sequelize.STRING },
-      role: { type: Sequelize.STRING },
+      name: { type: Sequelize.STRING, allowNull: false },
+      role: { type: Sequelize.STRING, allowNull: false },
       password: { type: Sequelize.STRING },
-      address: { type: Sequelize.STRING },
+      address: { type: Sequelize.STRING, allowNull: false },
       nameofisp: { type: Sequelize.STRING },
       nomor_ktp: { type: Sequelize.STRING },
-      email: { type: Sequelize.STRING },
+      email: { type: Sequelize.STRING, allowNull: false },
       gps: { type: Sequelize.STRING },
       photo: { type: Sequelize.STRING },
-      phone: { type: Sequelize.STRING },
+      phone: { type: Sequelize.STRING, allowNull: false },
     },
-    { timestamps: false, createdAt: false }
+    { timestamps: true }
   );
   return User;
 };

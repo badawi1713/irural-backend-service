@@ -3,6 +3,7 @@ module.exports = (app) => {
   const router = require('express').Router();
 
   // Register
+  router.get('/getAll', User.getUsers);
   router.post('/register', User.register);
-  app.use('/api/register', router);
+  app.use('/api/auth', router);
 };
