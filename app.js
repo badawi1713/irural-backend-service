@@ -1,12 +1,23 @@
 const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3002;
-const routerAdmin = require('./routes/routerAdmin');
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use('/admin', routerAdmin);
+const bodyParser = require('body-parser');
 
-module.exports = app;
+const adminRoutes = require('./routes/routerAdmin');
+
+const PORT = 3002;
+
+const app = express();
+
+app.use(bodyParser.json());
+
+app.use('/', adminRoutes);
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: true,
+    message: 'Welcome',
+  });
+});
+
 app.listen(PORT, () => {
-  console.log('Listeng on port ' + PORT);
+  console.log(`Application Running at port ${PORT}`);
 });
