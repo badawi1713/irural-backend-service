@@ -5,6 +5,8 @@ const multer = require('multer');
 const fs = require('fs-extra');
 //const uploadMiddleware = require('../middlewares/upload');
 const path = require('path');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const storage = multer.diskStorage({
   destination: './public/upload/',
@@ -63,7 +65,8 @@ module.exports = {
             message: err.message,
           });
         });
-    } else if (req.params.role === 'Customer_ISP') {
+    } else if (req.params.role === 'ISP') {
+      console.log('haloo', req.body.nama_isp);
       userModel
         .create({
           nama,
@@ -74,14 +77,14 @@ module.exports = {
           kelurahan,
           kodepos,
           alamat,
-          role,
           nik,
+          role,
         })
-        .then((user) => {
+        .then((user1) => {
           res.status(200).json({
             status: true,
             message: 'Customer ISP Created Successfully',
-            user,
+            user1,
           });
         })
         .catch((err) => {
@@ -161,11 +164,7 @@ module.exports = {
   take: (req, res) => {
     userModel
       .findAll({
-        where: { role: 'Customer_ISP' },
-
-        /* include: {
-          model: photoModel,
-        }, */
+        where: { role: 'ISP' },
       })
       .then((data) => {
         if (data) {
@@ -178,6 +177,58 @@ module.exports = {
           res.status(200).json({
             status: false,
             message: 'No Customer ISP Found',
+          });
+        }
+      });
+  },
+  getAll: (req, res) => {
+    photoModel.findAll({}).then((data) => {
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: 'get all upload Found',
+          data: data,
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: 'No File ISP Found',
+        });
+      }
+    });
+  },
+  getByid: (req, res) => {
+    photoModel
+      .findOne({ where: { id: { [Op.eq]: req.params.id } } })
+      .then((data) => {
+        if (data) {
+          res.status(200).json({
+            status: true,
+            message: 'get file Found',
+            data: data,
+          });
+        } else {
+          res.status(200).json({
+            status: false,
+            message: 'No file ISP Found',
+          });
+        }
+      });
+  },
+  getAllByid: (req, res) => {
+    photoModel
+      .findAll({ where: { photoId: { [Op.eq]: req.params.id } } })
+      .then((data) => {
+        if (data) {
+          res.status(200).json({
+            status: true,
+            message: 'get all upload file Found',
+            data: data,
+          });
+        } else {
+          res.status(200).json({
+            status: false,
+            message: 'No upload file Found',
           });
         }
       });

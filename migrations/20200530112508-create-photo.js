@@ -13,8 +13,8 @@ module.exports = {
       },
       photoId: {
         type: Sequelize.INTEGER,
-        references: { model: { tableName: 'Customers' }, key: 'id' },
         allowNull: false,
+        references: { model: { tableName: 'Customers' }, key: 'id' },
       },
       createdAt: {
         allowNull: false,

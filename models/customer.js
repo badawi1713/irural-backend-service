@@ -10,9 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       nama_isp: {
         type: DataTypes.STRING,
-        validate: {
-          notEmpty: { msg: 'Please Enter Your Name of isp' },
-        },
+        validate: { notEmpty: { msg: 'Please Enter Your Name' } },
       },
       email: {
         type: DataTypes.STRING,
@@ -50,17 +48,16 @@ module.exports = (sequelize, DataTypes) => {
         validate: { notEmpty: { msg: 'Please Enter Your Address' } },
       },
       currentLocation: DataTypes.GEOMETRY('POINT'),
-      role: DataTypes.ENUM('User', 'ISP'),
+      role: DataTypes.ENUM('Customer', 'ISP'),
       nik: {
         type: DataTypes.STRING,
-        validate: { notEmpty: { msg: 'Please Enter Your Name' } },
+        validate: { notEmpty: { msg: 'Please Enter Your Nik' } },
       },
     },
     {}
   );
   Customers.associate = function (models) {
     // associations can be defined here
-    // Customers.hasMany(photo, { foreignKey: 'photoId' });
   };
   return Customers;
 };
