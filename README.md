@@ -24,14 +24,14 @@ The mysql database file is already on this repository, you can find it by open t
 
     $ npm start
 
-## admin endpoint
+## user's endpoint
 
 | No  | HTTP Method | URI                   | Operation                 |
 | --- | ----------- | --------------------- | ------------------------- |
 | 1   | POST        | /api/v1/auth/register | Register admin            |
 | 2   | Post        | /api/v1/auth/login    | Login admin and get token |
 
-## Genre's endpoint
+## Customer's endpoint
 
 | No  | HTTP Method | URI                             | Operation                               |
 | --- | ----------- | ------------------------------- | --------------------------------------- |
