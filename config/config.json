@@ -2,23 +2,23 @@
   "development": {
     "username": "root",
     "password": "payphone16",
-    "database": "indihome",
+    "database": "backend_indihome",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": 0
   },
   "test": {
     "username": "root",
-    "password": null,
-    "database": "database_test",
+    "password": "payphone16",
+    "database": "backend_indihome",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": 0
   },
   "production": {
     "username": "root",
-    "password": null,
-    "database": "database_production",
+    "password": "payphone16",
+    "database": "backend_indihome",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": 0

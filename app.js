@@ -10,10 +10,10 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const Admin = require('./routes/admin_routes');
-const User = require('./routes/user_routes');
-app.use('/api/v1/auth', Admin);
-app.use('/api/v1/user', User);
+const users = require('./routes/users_routes');
+const customers = require('./routes/customer_routes');
+app.use('/api/v1/auth', users);
+app.use('/api/v1/customer', customers);
 
 app.listen(port, function () {
   console.log(`Server is Running on port ${port}`);
