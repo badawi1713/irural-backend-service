@@ -1,28 +1,58 @@
-const customers = require('../models').customer_registers;
-const fileupload = require('../models').customer_register_files;
+const customer = require('../models').customer_registers;
+const FileUpload = require('../models').customer_register_files;
 const multer = require('multer');
 const fs = require('fs-extra');
 const path = require('path');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const storage = multer.diskStorage({
   destination: './public/upload/',
   filename: (req, file, cb) => {
-    cb(
-      null,
-      file.fieldname +
-        '-' +
-        new Date().toISOString() +
-        path.extname(file.originalname)
-    );
+    const filename = file.originalname;
+    const splitted = filename.split('.');
+    const extension = splitted[splitted.length - 1];
+    function isImage(extension) {
+      switch (extension) {
+        case 'pdf':
+          return true;
+      }
+      return false;
+    }
+    if (!isImage(extension)) {
+      const message = 'Oops!, File allowed only PDF';
+      cb({ message });
+    } else {
+      cb(
+        null,
+        file.fieldname +
+          '-' +
+          new Date().toISOString() +
+          path.extname(file.originalname)
+      );
+    }
   },
 });
 const upload = multer({
   storage,
-}).single('file_url');
+}).array('file_url');
 
 module.exports = {
-  register: (req, res) => {
+  uploadfile: (req, res, next) => {
+    upload(req, res, (err) => {
+      if (err) {
+        res.status(500).json({
+          message: err.message,
+        });
+      } else {
+        next();
+      }
+    });
+  },
+
+  Register: (req, res, next) => {
     const { role } = req.params;
+    const { files } = req;
     const {
       name,
       address,
@@ -37,7 +67,7 @@ module.exports = {
       isp_email,
     } = req.body;
     if (role === 'Customer') {
-      customers
+      customer
         .create({
           name,
           address,
@@ -62,7 +92,7 @@ module.exports = {
           });
         });
     } else if (role === 'ISP') {
-      customers
+      customer
         .create({
           name,
           address,
@@ -77,66 +107,117 @@ module.exports = {
           isp_email,
           role,
         })
-        .then((user) => {
+        .then((newCustomer) => {
           const fileUploadData = files.map((file) => ({
-            file_url: req.file.file_url,
-            customer_register_id: user.id,
+            file_url: file.path,
+            customer_register_id: newCustomer.id,
           }));
-          return fileupload.bulkCreate(fileUploadData).then((info) => {
-            res.send({
-              message: 'Successfully registered the customer info',
-              info,
-            });
+          return FileUpload.bulkCreate(fileUploadData);
+        })
+        .then((info) => {
+          res.send({
+            message: 'Successfully registered the customers info',
+            info,
           });
         })
         .catch((err) => {
-          res.status(500).json({
-            message: err.message,
-          });
+          next(err);
         });
     }
   },
-  uploadfile: (req, res) => {
-    upload(req, res, (err) => {
-      if (err) {
-        res.status(500).json({
-          message: err.message,
+  allCustomer: (req, res) => {
+    customer
+      .findAll({
+        where: { role: 'Customer' },
+        limit: 10,
+        order: [['createdAt', 'ASC']],
+      })
+      .then((data) => {
+        if (data) {
+          res.status(200).json({
+            status: true,
+            message: 'Customer Found',
+            data: data,
+          });
+        } else {
+          res.status(200).json({
+            status: false,
+            message: 'No Customer Found',
+          });
+        }
+      });
+  },
+  allIsp: (req, res) => {
+    customer
+      .findAll({
+        where: { role: 'ISP' },
+        limit: 10,
+        order: [['createdAt', 'ASC']],
+      })
+      .then((data) => {
+        if (data) {
+          res.status(200).json({
+            status: true,
+            message: 'Customer Found',
+            data: data,
+          });
+        } else {
+          res.status(200).json({
+            status: false,
+            message: 'No Customer Found',
+          });
+        }
+      });
+  },
+  allFile: (req, res) => {
+    FileUpload.findAll({}).then((data) => {
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: 'get all upload Found',
+          data: data,
         });
       } else {
-        const file = req.file.filename;
-        const extension = file.split('.');
-        const filename = extension[extension.length - 1];
-        function isImage(filename) {
-          switch (filename) {
-            case 'pdf':
-              return true;
-          }
-          return false;
-        }
-        if (!isImage(filename)) {
-          const message = 'Oops!, File allowed only PDF';
-          res.status(500).json({
-            message,
+        res.status(200).json({
+          status: false,
+          message: 'No File ISP Found',
+        });
+      }
+    });
+  },
+  fileByid: (req, res) => {
+    FileUpload.findOne({ where: { id: { [Op.eq]: req.params.id } } }).then(
+      (data) => {
+        if (data) {
+          res.status(200).json({
+            status: true,
+            message: 'get file Found',
+            data: data,
           });
-          fs.unlink(`./public/upload/${req.file.filename}`);
         } else {
-          fileupload
-            .create({
-              file_url: req.file.filename,
-            })
-            .then((user) => {
-              res.status(200).json({
-                status: true,
-                message: 'Customer ISP Upload File Successfully',
-                user,
-              });
-            })
-            .catch((err) => {
-              res.status(500).json({
-                message: err.message,
-              });
-            });
+          res.status(200).json({
+            status: false,
+            message: 'No file ISP Found',
+          });
         }
+      }
+    );
+  },
+  allfilesByid: (req, res) => {
+    FileUpload.findAll({
+      where: { customer_register_id: { [Op.eq]: req.params.id } },
+    }).then((data) => {
+      if (data) {
+        res.status(200).json({
+          status: true,
+          message: 'get all upload file Found',
+          data: data,
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: 'No upload file Found',
+        });
       }
     });
   },
