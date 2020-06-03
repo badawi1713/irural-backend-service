@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('customer_registers', {
+    return queryInterface.createTable("customer_registers", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,10 +14,13 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
-      kelurahan: {
+      subdistrict: {
         type: Sequelize.STRING,
       },
-      code_pos: {
+      province: {
+        type: Sequelize.STRING,
+      },
+      zip_code: {
         type: Sequelize.STRING,
       },
       contact_number: {
@@ -30,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       location: {
-        type: Sequelize.GEOMETRY('POINT'),
+        type: Sequelize.GEOMETRY("POINT"),
       },
       isp_name: {
         type: Sequelize.STRING,
@@ -47,16 +50,16 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('customer_registers');
+    return queryInterface.dropTable("customer_registers");
   },
 };

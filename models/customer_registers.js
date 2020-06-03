@@ -1,55 +1,60 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
   const customer_registers = sequelize.define(
-    'customer_registers',
+    "customer_registers",
     {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: { msg: 'Please Enter Your Name' } },
+        validate: { notEmpty: { msg: "Please Enter Your Name" } },
       },
       address: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: { msg: 'Please Enter Your Address' } },
+        validate: { notEmpty: { msg: "Please Enter Your Address" } },
       },
-      kelurahan: {
+      subdistrict: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: { msg: 'Please Enter Your Kelurahan' } },
+        validate: { notEmpty: { msg: "Please Enter Your Subdistrict" } },
       },
-      code_pos: {
+      province: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: { msg: 'Please Enter Your Code Pos' } },
+        validate: { notEmpty: { msg: "Please Enter Your Province" } },
+      },
+      zip_code: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: { msg: "Please Enter Your Zip Code" } },
       },
       contact_number: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: { notEmpty: { msg: 'Please Enter Your Phone' } },
+        allowNull: true,
+        validate: { notEmpty: { msg: "Please Enter Your Phone" } },
       },
       email: {
         type: DataTypes.STRING,
         validate: {
-          isEmail: { msg: 'Wrong Email Format' },
-          notEmpty: { msg: 'Please Enter Your Email' },
+          isEmail: { msg: "Wrong Email Format" },
+          notEmpty: { msg: "Please Enter Your Email" },
         },
       },
       identity_number: DataTypes.STRING,
-      location: DataTypes.GEOMETRY('POINT'),
+      location: DataTypes.GEOMETRY("POINT"),
       isp_name: DataTypes.STRING,
       isp_contact_number: {
         type: DataTypes.STRING,
-        validate: { notEmpty: { msg: 'Please Enter Your Phone Office' } },
+        validate: { notEmpty: { msg: "Please Enter Your Phone Office" } },
       },
       isp_email: {
         type: DataTypes.STRING,
         validate: {
-          isEmail: { msg: 'Wrong Email Format' },
-          notEmpty: { msg: 'Please Enter Your Email' },
+          isEmail: { msg: "Wrong Email Format" },
+          notEmpty: { msg: "Please Enter Your Email" },
         },
       },
-      role: DataTypes.ENUM('Customer', 'ISP'),
+      role: DataTypes.ENUM("Customer", "ISP"),
     },
     {}
   );

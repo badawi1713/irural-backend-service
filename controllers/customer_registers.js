@@ -1,32 +1,32 @@
-const customer = require('../models').customer_registers;
-const FileUpload = require('../models').customer_register_files;
-const multer = require('multer');
-const fs = require('fs-extra');
-const path = require('path');
-const Sequelize = require('sequelize');
+const customer = require("../models").customer_registers;
+const FileUpload = require("../models").customer_register_files;
+const multer = require("multer");
+const fs = require("fs-extra");
+const path = require("path");
+const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
 const storage = multer.diskStorage({
-  destination: './public/upload/',
+  destination: "./public/upload/",
   filename: (req, file, cb) => {
     const filename = file.originalname;
-    const splitted = filename.split('.');
+    const splitted = filename.split(".");
     const extension = splitted[splitted.length - 1];
     function isImage(extension) {
       switch (extension) {
-        case 'pdf':
+        case "pdf":
           return true;
       }
       return false;
     }
     if (!isImage(extension)) {
-      const message = 'Oops!, File allowed only PDF';
+      const message = "Oops!, File allowed only PDF";
       cb({ message });
     } else {
       cb(
         null,
         file.fieldname +
-          '-' +
+          "-" +
           new Date().toISOString() +
           path.extname(file.originalname)
       );
@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage,
-}).array('file_url');
+}).array("file_url");
 
 module.exports = {
   uploadfile: (req, res, next) => {
@@ -56,8 +56,9 @@ module.exports = {
     const {
       name,
       address,
-      kelurahan,
-      code_pos,
+      subdistrict,
+      province,
+      zip_code,
       contact_number,
       email,
       identity_number,
@@ -66,13 +67,14 @@ module.exports = {
       isp_contact_number,
       isp_email,
     } = req.body;
-    if (role === 'Customer') {
+    if (role === "Customer") {
       customer
         .create({
           name,
           address,
-          kelurahan,
-          code_pos,
+          subdistrict,
+          province,
+          zip_code,
           contact_number,
           email,
           identity_number,
@@ -82,7 +84,7 @@ module.exports = {
         .then((user) => {
           res.status(200).json({
             status: true,
-            message: 'Customer Created Successfully',
+            message: "Customer Created Successfully",
             user,
           });
         })
@@ -91,13 +93,14 @@ module.exports = {
             message: err.message,
           });
         });
-    } else if (role === 'ISP') {
+    } else if (role === "ISP") {
       customer
         .create({
           name,
           address,
-          kelurahan,
-          code_pos,
+          subdistrict,
+          province,
+          zip_code,
           contact_number,
           email,
           identity_number,
@@ -116,7 +119,7 @@ module.exports = {
         })
         .then((info) => {
           res.send({
-            message: 'Successfully registered the customers info',
+            message: "Successfully registered the customers info",
             info,
           });
         })
@@ -128,21 +131,21 @@ module.exports = {
   allCustomer: (req, res) => {
     customer
       .findAll({
-        where: { role: 'Customer' },
+        where: { role: "Customer" },
         limit: 10,
-        order: [['createdAt', 'ASC']],
+        order: [["createdAt", "ASC"]],
       })
       .then((data) => {
         if (data) {
           res.status(200).json({
             status: true,
-            message: 'Customer Found',
+            message: "Customer Found",
             data: data,
           });
         } else {
           res.status(200).json({
             status: false,
-            message: 'No Customer Found',
+            message: "No Customer Found",
           });
         }
       });
@@ -150,21 +153,21 @@ module.exports = {
   allIsp: (req, res) => {
     customer
       .findAll({
-        where: { role: 'ISP' },
+        where: { role: "ISP" },
         limit: 10,
-        order: [['createdAt', 'ASC']],
+        order: [["createdAt", "ASC"]],
       })
       .then((data) => {
         if (data) {
           res.status(200).json({
             status: true,
-            message: 'Customer Found',
+            message: "Customer Found",
             data: data,
           });
         } else {
           res.status(200).json({
             status: false,
-            message: 'No Customer Found',
+            message: "No Customer Found",
           });
         }
       });
@@ -174,13 +177,13 @@ module.exports = {
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'get all upload Found',
+          message: "get all upload Found",
           data: data,
         });
       } else {
         res.status(200).json({
           status: false,
-          message: 'No File ISP Found',
+          message: "No File ISP Found",
         });
       }
     });
@@ -191,13 +194,13 @@ module.exports = {
         if (data) {
           res.status(200).json({
             status: true,
-            message: 'get file Found',
+            message: "get file Found",
             data: data,
           });
         } else {
           res.status(200).json({
             status: false,
-            message: 'No file ISP Found',
+            message: "No file ISP Found",
           });
         }
       }
@@ -210,13 +213,13 @@ module.exports = {
       if (data) {
         res.status(200).json({
           status: true,
-          message: 'get all upload file Found',
+          message: "get all upload file Found",
           data: data,
         });
       } else {
         res.status(200).json({
           status: false,
-          message: 'No upload file Found',
+          message: "No upload file Found",
         });
       }
     });

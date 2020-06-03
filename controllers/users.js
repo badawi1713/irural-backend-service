@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const adminModel = require('../models').users;
-const bcrypt = require('bcrypt');
-const Sequelize = require('sequelize');
+const jwt = require("jsonwebtoken");
+const adminModel = require("../models").users;
+const bcrypt = require("bcryptjs");
+const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-require('dotenv/config');
+require("dotenv/config");
 
 module.exports = {
   register: (req, res) => {
@@ -15,7 +15,7 @@ module.exports = {
         if (admin) {
           res.status(500).json({
             status: false,
-            message: 'Admin already exist with email address',
+            message: "Admin already exist with email address",
           });
         } else {
           adminModel
@@ -27,7 +27,7 @@ module.exports = {
             .then((admin) => {
               res.status(200).json({
                 status: true,
-                message: 'Admin Created SuccessFully',
+                message: "Admin Created SuccessFully",
               });
             });
         }
@@ -52,7 +52,7 @@ module.exports = {
             );
             res.status(200).json({
               status: true,
-              message: 'Login Successfully',
+              message: "Login Successfully",
               admin,
               token: token,
             });
